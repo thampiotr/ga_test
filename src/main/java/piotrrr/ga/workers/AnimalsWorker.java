@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Random;
 
 public class AnimalsWorker implements Runnable {
-  private static final double BIRTH_RATE = 0.0001;
-  private static final double DEATH_RATE = BIRTH_RATE;
+  private static final double BIRTH_RATE = 0.001;
+  private static final double DEATH_RATE = BIRTH_RATE * 0.9;
   private static final int ST_DEV_BIRTH_POSITION = 1;
   private World world;
   private final Random random = new Random();
@@ -63,8 +63,9 @@ public class AnimalsWorker implements Runnable {
           animalsToRemove.add(animal);
         }
       }
-      animalsToAdd.forEach(world::addEntity);
       animalsToRemove.forEach(world::removeEntity);
+      managedAnimals.removeAll(animalsToRemove);
+      animalsToAdd.forEach(world::addEntity);
       managedAnimals.addAll(animalsToAdd);
       try {
         Thread.sleep(world.getTimeTick());

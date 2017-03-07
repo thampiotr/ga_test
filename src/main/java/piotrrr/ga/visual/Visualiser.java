@@ -22,7 +22,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class Visualiser extends Application {
   // Pixels will grow by 2 x PIXEL_SIZE_GROWTH
-  private static final int PIXEL_SIZE_GROWTH = 0;
+  private static final int PIXEL_SIZE_GROWTH = 2;
   private static final String APPLICATION_NAME = "GA World Viewer";
   private static final Color BACKGROUND_COLOR = Color.WHITE;
   private World world;
