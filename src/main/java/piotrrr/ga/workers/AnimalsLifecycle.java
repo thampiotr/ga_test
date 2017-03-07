@@ -3,13 +3,14 @@ package piotrrr.ga.workers;
 import piotrrr.ga.Util;
 import piotrrr.ga.World;
 import piotrrr.ga.schema.Animal;
+import piotrrr.ga.schema.Orientation;
 import piotrrr.ga.schema.Position;
 
 import java.util.*;
 
 public class AnimalsLifecycle implements Runnable {
-  private static final double BIRTH_RATE = 0.001;
-  private static final double DEATH_RATE = BIRTH_RATE * 0.9;
+  private static final double BIRTH_RATE = 0.00001;
+  private static final double DEATH_RATE = BIRTH_RATE * 1.01;
   private static final int ST_DEV_BIRTH_POSITION = 1;
   private World world;
   private final Random random = new Random();
@@ -78,6 +79,7 @@ public class AnimalsLifecycle implements Runnable {
   private Animal newRandomAnimal(long meanX, double meanY, long stDev) {
     return Animal.builder()
         .bornTime(workerTime)
+        .orientation(Orientation.NORTH)
         .position(
             Position.builder()
                 .x(Util.randomNormal(random, meanX, stDev, 0, world.getWidth()))

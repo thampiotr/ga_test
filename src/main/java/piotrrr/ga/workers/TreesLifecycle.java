@@ -8,7 +8,7 @@ import piotrrr.ga.schema.Tree;
 import java.util.*;
 
 public class TreesLifecycle implements Runnable {
-  private static final double GROWTH_RATE = 0.01;
+  private static final double GROWTH_RATE = 0.005;
   private static final double DEATH_RATE = GROWTH_RATE * 0.5;
   private static final double ST_DEV_GROWN_POSITION = 1;
   private World world;

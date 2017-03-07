@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import lombok.Getter;
 import piotrrr.ga.schema.Entity;
+import piotrrr.ga.schema.Position;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -15,9 +16,9 @@ import java.util.function.Consumer;
 
 @Getter
 public class World {
-  private int width = 500;
-  private int height = 500;
-  private long timeTick = 5;
+  private int width = 200;
+  private int height = 200;
+  private long timeTick = 50;
 
   private Map<Integer, Multimap<Integer, Entity>> entities = new ConcurrentHashMap<>();
 
@@ -32,6 +33,10 @@ public class World {
     normalize(e);
     Multimap<Integer, Entity> column = entities.get(getXWithWraparound(e));
     column.put(getYWithWraparound(e), e);
+  }
+
+  public List<Entity> getEntitiesAt(Position position) {
+    return getEntitiesAt(position.getX(), position.getY());
   }
 
   public List<Entity> getEntitiesAt(int x, int y) {
@@ -78,5 +83,11 @@ public class World {
   public void forAllEntities(Consumer<Entity> consumer) {
     entities.values().forEach(column -> column.values().forEach(consumer));
   }
+
+  public boolean isWithinBounds(Position position) {
+    return position.getX() >= 0 && position.getX() < getWidth()
+        && position.getY() >= 0 && position.getY() < getHeight();
+  }
+
 }
 
