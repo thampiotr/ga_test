@@ -22,11 +22,11 @@ import java.util.concurrent.CountDownLatch;
 
 public class Visualiser extends Application {
   // Pixels will grow by 2 x PIXEL_SIZE_GROWTH
-  private static final int PIXEL_SIZE_GROWTH = 2;
+  private static final int PIXEL_SIZE_GROWTH = 0;
   private static final String APPLICATION_NAME = "GA World Viewer";
   private static final Color BACKGROUND_COLOR = Color.WHITE;
   private World world;
-  private static final long REFRESH_INTERVAL = 100;
+  private static final long REFRESH_INTERVAL = 50;
 
   @Override
   public void start(Stage stage) {
@@ -74,8 +74,6 @@ public class Visualiser extends Application {
 
           image = new WritableImage(image.getPixelReader(), world.getWidth(), world.getHeight());
           PixelWriter writer = image.getPixelWriter();
-          toRemoveCopy.forEach(
-              entity -> draw(writer, entity.getPosition().getX(), entity.getPosition().getY(), BACKGROUND_COLOR));
           toAddCopy.forEach(entity -> {
             if (entity instanceof Tree) {
               draw(writer, entity.getPosition().getX(), entity.getPosition().getY(), Color.GREEN);
@@ -83,12 +81,19 @@ public class Visualiser extends Application {
               draw(writer, entity.getPosition().getX(), entity.getPosition().getY(), Color.RED);
             }
           });
+          toRemoveCopy.forEach(
+              entity -> draw(writer, entity.getPosition().getX(), entity.getPosition().getY(), BACKGROUND_COLOR));
 
           CountDownLatch updateDone = new CountDownLatch(1);
           WritableImage finalImage = image;
           Platform.runLater(() -> {
             pane.getChildren().clear();
-            pane.getChildren().add(new ImageView(finalImage));
+            ImageView view = new ImageView(finalImage);
+            view.setSmooth(false);
+            view.setPreserveRatio(true);
+            view.setFitHeight(pane.getHeight());
+            view.setFitWidth(pane.getWidth());
+            pane.getChildren().add(view);
             updateDone.countDown();
           });
           updateDone.await();

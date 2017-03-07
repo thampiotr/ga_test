@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 public class World {
   private int width = 500;
   private int height = 500;
-  private long timeTick = 10;
+  private long timeTick = 100;
   private LinkedList<Consumer<Entity>> addEntityObservers = new LinkedList<>();
   private LinkedList<Consumer<Entity>> removeEntityObservers = new LinkedList<>();
 
@@ -67,11 +67,11 @@ public class World {
   }
 
   private int wrapY(int y) {
-    return y % height;
+    return Math.abs(y % height);
   }
 
   private int wrapX(int x) {
-    return x % width;
+    return Math.abs(x % width);
   }
 
   public void forAllEntities(Consumer<Entity> consumer) {

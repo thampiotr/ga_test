@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class AnimalsWorker implements Runnable {
+public class AnimalsLifecycle implements Runnable {
   private static final double BIRTH_RATE = 0.001;
   private static final double DEATH_RATE = BIRTH_RATE * 0.9;
   private static final int ST_DEV_BIRTH_POSITION = 1;
@@ -19,7 +19,7 @@ public class AnimalsWorker implements Runnable {
   private long workerTime = 0L;
   private ArrayList<Animal> managedAnimals = new ArrayList<>();
 
-  public AnimalsWorker(World world, int populationSize) {
+  public AnimalsLifecycle(World world, int populationSize) {
     this.world = world;
     ArrayList<Animal> animals = createInitialAnimalsPopulation(populationSize);
     animals.forEach(world::addEntity);
@@ -72,6 +72,9 @@ public class AnimalsWorker implements Runnable {
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
+
+      // TODO: very hacky way to run the animal movement worker:
+      new AnimalsMovement(world, managedAnimals).runOnce();
     }
   }
 

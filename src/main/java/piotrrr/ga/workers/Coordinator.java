@@ -14,11 +14,11 @@ public class Coordinator {
   }
 
   public void initializeWorld() {
-    TreesWorker treesWorker = new TreesWorker(world, INITIAL_TREES_POPULATION_SIZE);
-    Util.startDaemonThread(treesWorker, "Trees Worker");
+    TreesLifecycle treesLifecycle = new TreesLifecycle(world, INITIAL_TREES_POPULATION_SIZE);
+    Util.startDaemonThread(treesLifecycle, "Trees Worker");
 
-    AnimalsWorker animalsWorker = new AnimalsWorker(world, INITIAL_ANIMALS_POPULATION_SIZE);
-    Util.startDaemonThread(animalsWorker, "Animals Worker");
+    AnimalsLifecycle animalsLifecycle = new AnimalsLifecycle(world, INITIAL_ANIMALS_POPULATION_SIZE);
+    Util.startDaemonThread(animalsLifecycle, "Animals Worker");
   }
 
 

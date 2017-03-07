@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class TreesWorker implements Runnable {
+public class TreesLifecycle implements Runnable {
   private static final double GROWTH_RATE = 0.01;
   private static final double DEATH_RATE = GROWTH_RATE * 0.8;
   private static final int ST_DEV_GROWN_POSITION = 5;
@@ -19,13 +19,12 @@ public class TreesWorker implements Runnable {
   private long workerTime = 0L;
   private ArrayList<Tree> managedTrees = new ArrayList<>();
 
-  public TreesWorker(World world, int populationSize) {
+  public TreesLifecycle(World world, int populationSize) {
     this.world = world;
     ArrayList<Tree> trees = createInitialTreesPopulation(populationSize);
     trees.forEach(world::addEntity);
     managedTrees.addAll(trees);
   }
-
 
   private ArrayList<Tree> createInitialTreesPopulation(int populationSize) {
     ArrayList<Tree> managedTrees = new ArrayList<>();
