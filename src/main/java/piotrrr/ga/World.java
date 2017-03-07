@@ -15,10 +15,11 @@ import java.util.function.Consumer;
 
 @Getter
 public class World {
-  private int width = 500;
-  private int height = 500;
+  private int width = 1000;
+  private int height = 1000;
   private long timeTick = 10L;
   private LinkedList<Consumer<Entity>> addEntityObservers = new LinkedList<>();
+  private LinkedList<Consumer<Entity>> removeEntityObservers = new LinkedList<>();
 
   private Map<Integer, Multimap<Integer, Entity>> entities = new ConcurrentHashMap<>();
 
@@ -38,8 +39,8 @@ public class World {
   public List<Entity> getEntitiesAt(int x, int y) {
     LinkedList<Entity> result = null;
     try {
-      y = y % height;
-      x = x % width;
+      y = wrapY(y);
+      x = wrapX(x);
       result = new LinkedList<>();
       Multimap<Integer, Entity> column = entities.get(x);
       Collection<Entity> entities = column.get(y);
@@ -50,12 +51,27 @@ public class World {
     return result;
   }
 
+  public void removeEntity(Entity e) {
+    Multimap<Integer, Entity> column = entities.get(getXWithWraparound(e));
+    if (column.remove(getYWithWraparound(e), e)) {
+      removeEntityObservers.forEach(c -> c.accept(e));
+    }
+  }
+
   private int getYWithWraparound(Entity e) {
-    return e.getPosition().getY() % height;
+    return wrapY(e.getPosition().getY());
   }
 
   private int getXWithWraparound(Entity e) {
-    return e.getPosition().getX() % width;
+    return wrapX(e.getPosition().getX());
+  }
+
+  private int wrapY(int y) {
+    return y % height;
+  }
+
+  private int wrapX(int x) {
+    return x % width;
   }
 
   public void forAllEntities(Consumer<Entity> consumer) {

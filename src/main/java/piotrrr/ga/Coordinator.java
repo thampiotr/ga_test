@@ -38,7 +38,7 @@ public class Coordinator {
 
   private Tree newRandomTree(long meanX, double meanY, long stDev) {
     return Tree.builder()
-        .lastReproduced(world.getCurrentTimeInTicks())
+        .bornTime(world.getCurrentTimeInTicks())
         .position(
             Position.builder()
                 .x(Util.randomNormal(random, meanX, stDev, 0, world.getWidth()))

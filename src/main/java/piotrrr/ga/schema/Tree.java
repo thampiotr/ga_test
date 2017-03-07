@@ -9,5 +9,5 @@ import lombok.Data;
 @Builder
 public class Tree implements Entity {
     private Position position;
-    private long lastReproduced;
+    private long bornTime;
 }
