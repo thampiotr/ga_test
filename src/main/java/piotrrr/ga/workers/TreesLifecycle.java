@@ -13,7 +13,7 @@ import java.util.Random;
 public class TreesLifecycle implements Runnable {
   private static final double GROWTH_RATE = 0.01;
   private static final double DEATH_RATE = GROWTH_RATE * 0.8;
-  private static final int ST_DEV_GROWN_POSITION = 5;
+  private static final int ST_DEV_GROWN_POSITION = 2;
   private World world;
   private final Random random = new Random();
   private long workerTime = 0L;

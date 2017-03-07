@@ -18,8 +18,6 @@ public class World {
   private int width = 500;
   private int height = 500;
   private long timeTick = 100;
-  private LinkedList<Consumer<Entity>> addEntityObservers = new LinkedList<>();
-  private LinkedList<Consumer<Entity>> removeEntityObservers = new LinkedList<>();
 
   private Map<Integer, Multimap<Integer, Entity>> entities = new ConcurrentHashMap<>();
 
@@ -31,9 +29,9 @@ public class World {
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
   public void addEntity(Entity e) {
+    normalize(e);
     Multimap<Integer, Entity> column = entities.get(getXWithWraparound(e));
     column.put(getYWithWraparound(e), e);
-    addEntityObservers.forEach(c -> c.accept(e));
   }
 
   public List<Entity> getEntitiesAt(int x, int y) {
@@ -53,9 +51,12 @@ public class World {
 
   public void removeEntity(Entity e) {
     Multimap<Integer, Entity> column = entities.get(getXWithWraparound(e));
-    if (column.remove(getYWithWraparound(e), e)) {
-      removeEntityObservers.forEach(c -> c.accept(e));
-    }
+    column.remove(getYWithWraparound(e), e);
+  }
+
+  private void normalize(Entity e) {
+    e.getPosition().setX(getXWithWraparound(e));
+    e.getPosition().setY(getYWithWraparound(e));
   }
 
   private int getYWithWraparound(Entity e) {

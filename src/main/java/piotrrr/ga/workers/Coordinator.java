@@ -6,7 +6,7 @@ import piotrrr.ga.World;
 public class Coordinator {
   private World world;
 
-  private static final int INITIAL_TREES_POPULATION_SIZE = 100;
+  private static final int INITIAL_TREES_POPULATION_SIZE = 500;
   private static final int INITIAL_ANIMALS_POPULATION_SIZE = 50;
 
   public Coordinator(World world) {
@@ -20,6 +20,4 @@ public class Coordinator {
     AnimalsLifecycle animalsLifecycle = new AnimalsLifecycle(world, INITIAL_ANIMALS_POPULATION_SIZE);
     Util.startDaemonThread(animalsLifecycle, "Animals Worker");
   }
-
-
 }

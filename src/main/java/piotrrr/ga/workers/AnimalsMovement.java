@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class AnimalsMovement implements Runnable {
-  private static final int STEP_SIZE = 4;
+  private static final int STEP_SIZE = 1;
   private World world;
   private final Random random = new Random();
   private ArrayList<Animal> managedAnimals;
