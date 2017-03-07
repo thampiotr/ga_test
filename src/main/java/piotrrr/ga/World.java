@@ -15,9 +15,9 @@ import java.util.function.Consumer;
 
 @Getter
 public class World {
-  private int width = 1000;
-  private int height = 1000;
-  private long timeTick = 10L;
+  private int width = 500;
+  private int height = 500;
+  private long timeTick = 10;
   private LinkedList<Consumer<Entity>> addEntityObservers = new LinkedList<>();
   private LinkedList<Consumer<Entity>> removeEntityObservers = new LinkedList<>();
 
@@ -76,10 +76,6 @@ public class World {
 
   public void forAllEntities(Consumer<Entity> consumer) {
     entities.values().forEach(column -> column.values().forEach(consumer));
-  }
-
-  public long getCurrentTimeInTicks() {
-    return System.currentTimeMillis() / timeTick;
   }
 }
 

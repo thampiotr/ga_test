@@ -13,7 +13,7 @@ public class Util {
    * @param max    maximum (exclusive)
    * @return pseudo-random number following a normal distribution with the above parameters.
    */
-  static int randomNormal(Random random, double mean, double stDev, int min, int max) {
+  public static int randomNormal(Random random, double mean, double stDev, int min, int max) {
     return Math.min(max - 1, Math.max(min, (int) (random.nextGaussian() * stDev + mean)));
   }
 
