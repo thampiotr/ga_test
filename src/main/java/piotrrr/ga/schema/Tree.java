@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class Bush implements HasPosition {
+public class Tree implements Entity {
     private Position position;
     private long lastReproduced;
 }
