@@ -16,9 +16,12 @@ import java.util.function.Consumer;
 
 @Getter
 public class World {
-  private int width = 200;
-  private int height = 200;
-  private long timeTick = 50;
+  public static final int WORLD_WIDTH = 500;
+  public static final int WORLD_HEIGHT = 500;
+
+  private int width = WORLD_WIDTH;
+  private int height = WORLD_HEIGHT;
+  private long timeTick = 10;
 
   private Map<Integer, Multimap<Integer, Entity>> entities = new ConcurrentHashMap<>();
 
@@ -30,7 +33,7 @@ public class World {
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
   public void addEntity(Entity e) {
-    normalize(e);
+//    normalize(e);
     Multimap<Integer, Entity> column = entities.get(getXWithWraparound(e));
     column.put(getYWithWraparound(e), e);
   }
@@ -73,11 +76,11 @@ public class World {
   }
 
   private int wrapY(int y) {
-    return Math.abs(y % height);
+    return y % height;
   }
 
   private int wrapX(int x) {
-    return Math.abs(x % width);
+    return x % width;
   }
 
   public void forAllEntities(Consumer<Entity> consumer) {

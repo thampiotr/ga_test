@@ -3,6 +3,7 @@ package piotrrr.ga.genetic;
 import piotrrr.ga.World;
 import piotrrr.ga.schema.Animal;
 import piotrrr.ga.schema.Position;
+import piotrrr.ga.schema.Tree;
 
 public interface Action {
 
@@ -15,6 +16,10 @@ public interface Action {
   Action MOVE_FORWARD = (world, animal) -> {
     Position newPosition = animal.getPositionInFront();
     if (world.isWithinBounds(newPosition)) {
+      // Eat all the trees.
+      world.getEntitiesAt(newPosition).stream()
+          .filter(e -> e instanceof Tree)
+          .forEach(world::removeEntity);
       world.removeEntity(animal);
       animal.setPosition(newPosition);
       world.addEntity(animal);

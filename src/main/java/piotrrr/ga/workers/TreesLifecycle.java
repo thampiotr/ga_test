@@ -8,9 +8,13 @@ import piotrrr.ga.schema.Tree;
 import java.util.*;
 
 public class TreesLifecycle implements Runnable {
-  private static final double GROWTH_RATE = 0.005;
-  private static final double DEATH_RATE = GROWTH_RATE * 0.5;
+  private static final double BASE_GROWTH_RATE = 0.00005;
+  private static final double TARGET_POPULATION = 50000;
   private static final double ST_DEV_GROWN_POSITION = 1;
+  private static final double DEATH_TO_GROWTH_RATE_RATIO = 0.5;
+
+  private double growthRate = BASE_GROWTH_RATE;
+  private double deathRate = growthRate * DEATH_TO_GROWTH_RATE_RATIO;
   private World world;
   private final Random random = new Random();
   private long workerTime = 0L;
@@ -39,21 +43,38 @@ public class TreesLifecycle implements Runnable {
   public void run() {
     while (true) {
       ++workerTime;
+
+      managedTrees.clear();
+      world.forAllEntities(entity -> {
+        if (entity instanceof Tree) {
+          managedTrees.add((Tree) entity);
+        }
+      });
+
+      // Growth rate decays as we approach target population
+      growthRate = (1.0 - managedTrees.size() / TARGET_POPULATION) * BASE_GROWTH_RATE;
+      // Make sure death rate is non-zero
+      deathRate = 0.1 * BASE_GROWTH_RATE + growthRate * DEATH_TO_GROWTH_RATE_RATIO;
+
       List<Tree> treesToAdd = new LinkedList<>();
       List<Tree> treesToRemove = new LinkedList<>();
       for (Tree tree : managedTrees) {
         double age = workerTime - tree.getBornTime();
         // Exponential distribution
-        double probabilityOfReproducing = 1.0 - Math.exp(-GROWTH_RATE * age);
+        double probabilityOfReproducing = 1.0 - Math.exp(-growthRate * age);
         double chance = random.nextDouble();
         if (chance < probabilityOfReproducing) {
-          Tree newTree = newRandomTree(tree.getPosition().getX(), tree.getPosition().getY(), ST_DEV_GROWN_POSITION);
-          if (thereIsNoTreeThereAlready(newTree)) {
-            treesToAdd.add(newTree);
+          int attempts = 5;
+          while (attempts-- > 0) {
+            Tree newTree = newRandomTree(tree.getPosition().getX(), tree.getPosition().getY(), ST_DEV_GROWN_POSITION);
+            if (thereIsNoTreeThereAlready(newTree)) {
+              treesToAdd.add(newTree);
+              break;
+            }
           }
         }
 
-        double probabilityOfDeath = 1.0 - Math.exp(-DEATH_RATE * age);
+        double probabilityOfDeath = 1.0 - Math.exp(-deathRate * age);
         chance = random.nextDouble();
         if (chance < probabilityOfDeath) {
           treesToRemove.add(tree);
@@ -76,7 +97,7 @@ public class TreesLifecycle implements Runnable {
         .filter(e -> e instanceof Tree).count() == 0;
   }
 
-  private Tree newRandomTree(long meanX, double meanY, double stDev) {
+  private Tree newRandomTree(double meanX, double meanY, double stDev) {
     return Tree.builder()
         .bornTime(workerTime)
         .position(
