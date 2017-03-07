@@ -1,12 +1,11 @@
 package piotrrr.ga.schema;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class Tree implements Entity {
     private Position position;
     private long bornTime;

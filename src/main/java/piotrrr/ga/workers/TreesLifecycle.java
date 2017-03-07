@@ -5,19 +5,16 @@ import piotrrr.ga.World;
 import piotrrr.ga.schema.Position;
 import piotrrr.ga.schema.Tree;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class TreesLifecycle implements Runnable {
   private static final double GROWTH_RATE = 0.01;
-  private static final double DEATH_RATE = GROWTH_RATE * 0.8;
-  private static final int ST_DEV_GROWN_POSITION = 2;
+  private static final double DEATH_RATE = GROWTH_RATE * 0.5;
+  private static final double ST_DEV_GROWN_POSITION = 1;
   private World world;
   private final Random random = new Random();
   private long workerTime = 0L;
-  private ArrayList<Tree> managedTrees = new ArrayList<>();
+  private HashSet<Tree> managedTrees = new HashSet<>();
 
   public TreesLifecycle(World world, int populationSize) {
     this.world = world;
@@ -79,7 +76,7 @@ public class TreesLifecycle implements Runnable {
         .filter(e -> e instanceof Tree).count() == 0;
   }
 
-  private Tree newRandomTree(long meanX, double meanY, long stDev) {
+  private Tree newRandomTree(long meanX, double meanY, double stDev) {
     return Tree.builder()
         .bornTime(workerTime)
         .position(

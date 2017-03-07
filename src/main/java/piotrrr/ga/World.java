@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 public class World {
   private int width = 500;
   private int height = 500;
-  private long timeTick = 100;
+  private long timeTick = 5;
 
   private Map<Integer, Multimap<Integer, Entity>> entities = new ConcurrentHashMap<>();
 

@@ -4,16 +4,16 @@ import piotrrr.ga.World;
 import piotrrr.ga.schema.Animal;
 import piotrrr.ga.schema.Position;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 public class AnimalsMovement implements Runnable {
   private static final int STEP_SIZE = 1;
   private World world;
   private final Random random = new Random();
-  private ArrayList<Animal> managedAnimals;
+  private HashSet<Animal> managedAnimals;
 
-  public AnimalsMovement(World world, ArrayList<Animal> managedAnimals) {
+  public AnimalsMovement(World world, HashSet<Animal> managedAnimals) {
     this.world = world;
     this.managedAnimals = managedAnimals;
   }

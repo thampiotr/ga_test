@@ -5,10 +5,7 @@ import piotrrr.ga.World;
 import piotrrr.ga.schema.Animal;
 import piotrrr.ga.schema.Position;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class AnimalsLifecycle implements Runnable {
   private static final double BIRTH_RATE = 0.001;
@@ -17,7 +14,7 @@ public class AnimalsLifecycle implements Runnable {
   private World world;
   private final Random random = new Random();
   private long workerTime = 0L;
-  private ArrayList<Animal> managedAnimals = new ArrayList<>();
+  private HashSet<Animal> managedAnimals = new HashSet<>();
 
   public AnimalsLifecycle(World world, int populationSize) {
     this.world = world;
