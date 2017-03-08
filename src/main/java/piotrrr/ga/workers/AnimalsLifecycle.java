@@ -9,8 +9,8 @@ import piotrrr.ga.schema.Position;
 import java.util.*;
 
 public class AnimalsLifecycle implements Runnable {
-  private static final double BIRTH_RATE = 0.00001;
-  private static final double DEATH_RATE = BIRTH_RATE * 1.01;
+  private static final double BIRTH_RATE = 0.0000001;
+  private static final double DEATH_RATE = BIRTH_RATE * 0.95;
   private static final int ST_DEV_BIRTH_POSITION = 1;
   private World world;
   private final Random random = new Random();
@@ -70,13 +70,10 @@ public class AnimalsLifecycle implements Runnable {
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
-
-      // TODO: very hacky way to run the animal movement worker:
-      new AnimalsMovement(world, managedAnimals).runOnce();
     }
   }
 
-  private Animal newRandomAnimal(long meanX, double meanY, long stDev) {
+  private Animal newRandomAnimal(double meanX, double meanY, double stDev) {
     return Animal.builder()
         .bornTime(workerTime)
         .orientation(Orientation.NORTH)

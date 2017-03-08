@@ -20,9 +20,10 @@ public interface Action {
       world.getEntitiesAt(newPosition).stream()
           .filter(e -> e instanceof Tree)
           .forEach(world::removeEntity);
-      world.removeEntity(animal);
-      animal.setPosition(newPosition);
-      world.addEntity(animal);
+      if (world.removeEntity(animal)) { // If failed to remove, it may mean the animal has died. Do not add it back.
+        animal.setPosition(newPosition);
+        world.addEntity(animal);
+      }
     }
   };
 

@@ -57,14 +57,9 @@ public class World {
     return result;
   }
 
-  public void removeEntity(Entity e) {
+  public boolean removeEntity(Entity e) {
     Multimap<Integer, Entity> column = entities.get(getXWithWraparound(e));
-    column.remove(getYWithWraparound(e), e);
-  }
-
-  private void normalize(Entity e) {
-    e.getPosition().setX(getXWithWraparound(e));
-    e.getPosition().setY(getYWithWraparound(e));
+    return column.remove(getYWithWraparound(e), e);
   }
 
   private int getYWithWraparound(Entity e) {
@@ -84,7 +79,7 @@ public class World {
   }
 
   public void forAllEntities(Consumer<Entity> consumer) {
-    entities.values().forEach(column -> column.values().forEach(consumer));
+    entities.values().parallelStream().forEach(column -> column.values().forEach(consumer));
   }
 
   public boolean isWithinBounds(Position position) {

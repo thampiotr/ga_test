@@ -14,12 +14,16 @@ public class Util {
    * @return pseudo-random number following a normal distribution with the above parameters.
    */
   public static int randomNormal(Random random, double mean, double stDev, int min, int max) {
-    int number = Double.valueOf(random.nextGaussian() * stDev + mean).intValue();
-    if (number < min || number >= max) {
+    double fpValue = random.nextGaussian() * stDev + mean;
+    int intValue = Double.valueOf(fpValue).intValue();
+    if (fpValue - intValue >= 0.5) { // Round half up.
+      ++intValue;
+    }
+    if (intValue < min || intValue >= max) {
       // try again
       return randomNormal(random, mean, stDev, min, max);
     }
-    return number;
+    return intValue;
   }
 
   public static void startDaemonThread(Runnable r, String name) {

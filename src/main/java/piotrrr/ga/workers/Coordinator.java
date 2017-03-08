@@ -19,5 +19,8 @@ public class Coordinator {
 
     AnimalsLifecycle animalsLifecycle = new AnimalsLifecycle(world, INITIAL_ANIMALS_POPULATION_SIZE);
     Util.startDaemonThread(animalsLifecycle, "Animals Worker");
+
+    AnimalsMovement animalsMovement = new AnimalsMovement(world);
+    Util.startDaemonThread(animalsMovement, "Animals Movement");
   }
 }

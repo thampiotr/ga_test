@@ -8,10 +8,11 @@ import piotrrr.ga.schema.Tree;
 import java.util.*;
 
 public class TreesLifecycle implements Runnable {
-  private static final double BASE_GROWTH_RATE = 0.00005;
-  private static final double TARGET_POPULATION = 50000;
-  private static final double ST_DEV_GROWN_POSITION = 1;
-  private static final double DEATH_TO_GROWTH_RATE_RATIO = 0.5;
+  private static final double TARGET_POPULATION_SIZE = 50000;
+  private static final double BASE_GROWTH_RATE = 0.0005;
+  private static final double MINIMUM_DEATH_RATE = BASE_GROWTH_RATE * 0.01;
+  private static final double DEATH_TO_GROWTH_RATE_RATIO = 0.9;
+  private static final double ST_DEV_OF_NEW_TREE_POSITION = 1;
 
   private double growthRate = BASE_GROWTH_RATE;
   private double deathRate = growthRate * DEATH_TO_GROWTH_RATE_RATIO;
@@ -24,7 +25,6 @@ public class TreesLifecycle implements Runnable {
     this.world = world;
     ArrayList<Tree> trees = createInitialTreesPopulation(populationSize);
     trees.forEach(world::addEntity);
-    managedTrees.addAll(trees);
   }
 
   private ArrayList<Tree> createInitialTreesPopulation(int populationSize) {
@@ -44,7 +44,7 @@ public class TreesLifecycle implements Runnable {
     while (true) {
       ++workerTime;
 
-      managedTrees.clear();
+      // managedTrees is empty at the beginning of each iteration.
       world.forAllEntities(entity -> {
         if (entity instanceof Tree) {
           managedTrees.add((Tree) entity);
@@ -52,9 +52,9 @@ public class TreesLifecycle implements Runnable {
       });
 
       // Growth rate decays as we approach target population
-      growthRate = (1.0 - managedTrees.size() / TARGET_POPULATION) * BASE_GROWTH_RATE;
+      growthRate = (1.0 - managedTrees.size() / TARGET_POPULATION_SIZE) * BASE_GROWTH_RATE;
       // Make sure death rate is non-zero
-      deathRate = 0.1 * BASE_GROWTH_RATE + growthRate * DEATH_TO_GROWTH_RATE_RATIO;
+      deathRate = MINIMUM_DEATH_RATE + growthRate * DEATH_TO_GROWTH_RATE_RATIO;
 
       List<Tree> treesToAdd = new LinkedList<>();
       List<Tree> treesToRemove = new LinkedList<>();
@@ -66,7 +66,8 @@ public class TreesLifecycle implements Runnable {
         if (chance < probabilityOfReproducing) {
           int attempts = 5;
           while (attempts-- > 0) {
-            Tree newTree = newRandomTree(tree.getPosition().getX(), tree.getPosition().getY(), ST_DEV_GROWN_POSITION);
+            Tree newTree = newRandomTree(tree.getPosition().getX(), tree.getPosition().getY(),
+                ST_DEV_OF_NEW_TREE_POSITION);
             if (thereIsNoTreeThereAlready(newTree)) {
               treesToAdd.add(newTree);
               break;
@@ -84,6 +85,9 @@ public class TreesLifecycle implements Runnable {
       managedTrees.removeAll(treesToRemove);
       treesToAdd.forEach(world::addEntity);
       managedTrees.addAll(treesToAdd);
+
+      // Clear before sleeping to free up some memory.
+      managedTrees.clear();
       try {
         Thread.sleep(world.getTimeTick());
       } catch (InterruptedException e) {
