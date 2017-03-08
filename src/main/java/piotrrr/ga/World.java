@@ -16,8 +16,8 @@ import java.util.function.Consumer;
 
 @Getter
 public class World {
-  public static final int WORLD_WIDTH = 500;
-  public static final int WORLD_HEIGHT = 500;
+  public static final int WORLD_WIDTH = 200;
+  public static final int WORLD_HEIGHT = 200;
 
   private int width = WORLD_WIDTH;
   private int height = WORLD_HEIGHT;
@@ -79,12 +79,16 @@ public class World {
   }
 
   public void forAllEntities(Consumer<Entity> consumer) {
-    entities.values().parallelStream().forEach(column -> column.values().forEach(consumer));
+    entities.values().forEach(column -> column.values().forEach(consumer));
   }
 
   public boolean isWithinBounds(Position position) {
-    return position.getX() >= 0 && position.getX() < getWidth()
-        && position.getY() >= 0 && position.getY() < getHeight();
+    return isWithinBounds(position.getX(), position.getY());
+  }
+
+  public boolean isWithinBounds(int x, int y) {
+    return x >= 0 && x < getWidth()
+        && y >= 0 && y < getHeight();
   }
 
 }

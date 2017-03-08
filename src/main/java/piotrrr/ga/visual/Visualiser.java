@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import piotrrr.ga.Util;
 import piotrrr.ga.World;
 import piotrrr.ga.schema.Animal;
+import piotrrr.ga.schema.Orientation;
 import piotrrr.ga.schema.Tree;
 import piotrrr.ga.workers.Coordinator;
 
@@ -49,6 +50,13 @@ public class Visualiser extends Application {
               writer.setColor(entity.getPosition().getX(), entity.getPosition().getY(), Color.GREEN);
             } else if (entity instanceof Animal) {
               writer.setColor(entity.getPosition().getX(), entity.getPosition().getY(), Color.RED);
+
+              Orientation orientation = ((Animal) entity).getOrientation();
+              int facingX = entity.getPosition().getX() + orientation.dx;
+              int facingY = entity.getPosition().getY() + orientation.dy;
+              if (world.isWithinBounds(facingX, facingY)) {
+                writer.setColor(facingX, facingY, Color.GRAY);
+              }
             }
           });
 

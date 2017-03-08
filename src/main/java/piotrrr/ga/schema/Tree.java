@@ -8,5 +8,4 @@ import lombok.*;
 @Setter
 public class Tree implements Entity {
     private Position position;
-    private long bornTime;
 }
