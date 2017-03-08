@@ -71,12 +71,20 @@ public class AnimalsMovement implements Runnable {
 
 
   private Action getNextAction(MovementInput input, Genome genome) {
-    double probabilityOfMovingForward = 0.8;
-    double turningProbability = 1 - probabilityOfMovingForward;
-    double chance = random.nextDouble();
-    if (chance <= probabilityOfMovingForward) {
+//    double probabilityOfMovingForward = 0.8;
+//    double turningProbability = 1 - probabilityOfMovingForward;
+//    double chance = random.nextDouble();
+//    if (chance <= probabilityOfMovingForward) {
+//      return Action.MOVE_FORWARD;
+//    } else if (chance <= turningProbability / 2) {
+//      return Action.TURN_LEFT;
+//    } else {
+//      return Action.TURN_RIGHT;
+//    }
+    double chance = random.nextInt(3);
+    if (chance == 0) {
       return Action.MOVE_FORWARD;
-    } else if (chance <= turningProbability / 2) {
+    } else if (chance == 1) {
       return Action.TURN_LEFT;
     } else {
       return Action.TURN_RIGHT;

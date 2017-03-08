@@ -16,11 +16,11 @@ public interface Action {
   Action MOVE_FORWARD = (world, animal) -> {
     Position newPosition = animal.getPositionInFront();
     if (world.isWithinBounds(newPosition)) {
-      // Eat all the trees.
-      world.getEntitiesAt(newPosition).stream()
-          .filter(e -> e instanceof Tree)
-          .forEach(world::removeEntity);
       if (world.removeEntity(animal)) { // If failed to remove, it may mean the animal has died. Do not add it back.
+        // Eat all the trees.
+        world.getEntitiesAt(newPosition).stream()
+            .filter(e -> e instanceof Tree)
+            .forEach(world::removeEntity);
         animal.setPosition(newPosition);
         world.addEntity(animal);
       }

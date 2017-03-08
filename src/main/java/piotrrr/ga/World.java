@@ -21,7 +21,7 @@ public class World {
 
   private int width = WORLD_WIDTH;
   private int height = WORLD_HEIGHT;
-  private long timeTick = 10;
+  private long timeTick = 0;
 
   private Map<Integer, Multimap<Integer, Entity>> entities = new ConcurrentHashMap<>();
 

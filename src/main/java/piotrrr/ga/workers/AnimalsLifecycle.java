@@ -9,9 +9,14 @@ import piotrrr.ga.schema.Position;
 import java.util.*;
 
 public class AnimalsLifecycle implements Runnable {
-  private static final double BIRTH_RATE = 0.0000001;
-  private static final double DEATH_RATE = BIRTH_RATE * 0.95;
-  private static final int ST_DEV_BIRTH_POSITION = 1;
+  private static final double TARGET_POPULATION_SIZE = 500;
+  private static final double BASE_GROWTH_RATE = 0.0005;
+  private static final double MINIMUM_DEATH_RATE = BASE_GROWTH_RATE * 0.1;
+  private static final double DEATH_TO_GROWTH_RATE_RATIO = 0.8;
+  private static final double ST_DEV_OF_NEW_ANIMAL_POSITION = 1;
+
+  private double growthRate = BASE_GROWTH_RATE;
+  private double deathRate = growthRate * DEATH_TO_GROWTH_RATE_RATIO;
   private World world;
   private final Random random = new Random();
   private long workerTime = 0L;
@@ -40,22 +45,28 @@ public class AnimalsLifecycle implements Runnable {
   public void run() {
     while (true) {
       ++workerTime;
+
+      // Growth rate linearly decreases as we approach target population
+      growthRate = (1.0 - managedAnimals.size() / TARGET_POPULATION_SIZE) * BASE_GROWTH_RATE;
+      // Death rate is never zero.
+      deathRate = MINIMUM_DEATH_RATE + growthRate * DEATH_TO_GROWTH_RATE_RATIO;
+
       List<Animal> animalsToAdd = new LinkedList<>();
       List<Animal> animalsToRemove = new LinkedList<>();
       for (Animal animal : managedAnimals) {
         double age = workerTime - animal.getBornTime();
 
         // Exponential distribution
-        double probabilityOfReproducing = 1.0 - Math.exp(-BIRTH_RATE * age);
+        double probabilityOfReproducing = 1.0 - Math.exp(-growthRate * age);
         double chance = random.nextDouble();
         if (chance < probabilityOfReproducing) {
           Animal newAnimal = newRandomAnimal(
-              animal.getPosition().getX(), animal.getPosition().getY(), ST_DEV_BIRTH_POSITION
+              animal.getPosition().getX(), animal.getPosition().getY(), ST_DEV_OF_NEW_ANIMAL_POSITION
           );
           animalsToAdd.add(newAnimal);
         }
 
-        double probabilityOfDeath = 1.0 - Math.exp(-DEATH_RATE * age);
+        double probabilityOfDeath = 1.0 - Math.exp(-deathRate * age);
         chance = random.nextDouble();
         if (chance < probabilityOfDeath) {
           animalsToRemove.add(animal);
@@ -76,7 +87,7 @@ public class AnimalsLifecycle implements Runnable {
   private Animal newRandomAnimal(double meanX, double meanY, double stDev) {
     return Animal.builder()
         .bornTime(workerTime)
-        .orientation(Orientation.NORTH)
+        .orientation(Orientation.getRandom())
         .position(
             Position.builder()
                 .x(Util.randomNormal(random, meanX, stDev, 0, world.getWidth()))

@@ -51,9 +51,9 @@ public class TreesLifecycle implements Runnable {
         }
       });
 
-      // Growth rate decays as we approach target population
+      // Growth rate linearly decreases as we approach target population.
       growthRate = (1.0 - managedTrees.size() / TARGET_POPULATION_SIZE) * BASE_GROWTH_RATE;
-      // Make sure death rate is non-zero
+      // Death rate is never zero.
       deathRate = MINIMUM_DEATH_RATE + growthRate * DEATH_TO_GROWTH_RATE_RATIO;
 
       List<Tree> treesToAdd = new LinkedList<>();
