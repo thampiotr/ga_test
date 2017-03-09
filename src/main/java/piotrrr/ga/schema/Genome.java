@@ -10,6 +10,7 @@ import java.util.Random;
 @Data
 @Builder
 public class Genome implements Component {
+  public static final int GENOME_STATE_SIZE = 16;
   private static final int GENOME_LENGTH = 64;
   private static final int POSSIBLE_OUTPUTS = 48;
 
@@ -17,7 +18,8 @@ public class Genome implements Component {
 
   public Action getNextAction(MovementInput input) {
     int genomePart = input.getObjectInFront().genomePart;
-    byte response = data[genomePart + input.getState()];
+    int partSize = GENOME_LENGTH / ObjectType.values().length;
+    byte response = data[genomePart * partSize + input.getState()];
     byte newState = (byte) (response & 0x0f);
     int newMove = (response & 0xf0) % 3;
     if (newMove == 0) {

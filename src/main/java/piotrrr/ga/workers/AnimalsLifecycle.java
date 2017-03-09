@@ -114,6 +114,7 @@ public class AnimalsLifecycle implements Runnable {
             .data(Genome.randomBytes(random))
             .build()
         )
+        .state((byte) random.nextInt(Genome.GENOME_STATE_SIZE))
         .orientation(Orientation.getRandom())
         .position(
             Position.builder()

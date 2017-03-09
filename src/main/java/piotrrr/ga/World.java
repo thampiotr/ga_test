@@ -33,7 +33,6 @@ public class World {
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
   public void addEntity(Entity e) {
-//    normalize(e);
     Multimap<Integer, Entity> column = entities.get(getXWithWraparound(e));
     column.put(getYWithWraparound(e), e);
   }
