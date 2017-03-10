@@ -14,7 +14,7 @@ public class AnimalsLifecycle implements Runnable {
   private static final long SELECTION_INTERVAL = 1000;
   private static final double ST_DEV_OF_NEW_ANIMAL_POSITION = 1;
   private static final double MUTATION_PROBABILITY = 0.005;
-  private static final double CROSSOVER_PROBABILITY = 0.3;
+  private static final double CROSSOVER_PROBABILITY = 0.1;
   private static final int MAX_POPULATION_SIZE = 20;
 
   private World world;
@@ -23,9 +23,7 @@ public class AnimalsLifecycle implements Runnable {
   private HashSet<Animal> managedAnimals = new HashSet<>();
 
   private double getScore(Animal animal) {
-    long age = workerTime - animal.getBornTime();
-    double treesEaten = animal.getTreesEaten();
-    return treesEaten / age;
+    return (double) animal.getTreesEaten();
   }
 
   public AnimalsLifecycle(World world) {
@@ -59,7 +57,6 @@ public class AnimalsLifecycle implements Runnable {
       double highScore = getScore(rankedAnimals.get(0));
       double average =
           rankedAnimals.stream().map(this::getScore).reduce(0.0, (sum, score) -> sum += score) / rankedAnimals.size();
-      rankedAnimals.addAll(managedAnimals);
 
       int survivingRank = (int) (managedAnimals.size() * FRACTION_OF_POPULATION_TO_SELECT);
 
@@ -79,13 +76,14 @@ public class AnimalsLifecycle implements Runnable {
         double probabilityOfReproduction = 1 - (double) i / MAX_POPULATION_SIZE;
         double chance = random.nextDouble();
         if (chance < probabilityOfReproduction) {
-          Animal newAnimal = mutatedCopyOf(animal);
-          animalsToAdd.add(newAnimal);
-        }
-        chance = random.nextDouble();
-        if (chance < CROSSOVER_PROBABILITY) {
-          Animal newAnimal = crossover(animal, rankedAnimals.get(i + 1));
-          animalsToAdd.add(newAnimal);
+          chance = random.nextDouble();
+          if (chance < CROSSOVER_PROBABILITY) {
+            Animal newAnimal = crossover(animal, rankedAnimals.get(i + 1));
+            animalsToAdd.add(newAnimal);
+          } else {
+            Animal newAnimal = mutatedCopyOf(animal);
+            animalsToAdd.add(newAnimal);
+          }
         }
         // Reset
         animal.setTreesEaten(0);
@@ -127,7 +125,7 @@ public class AnimalsLifecycle implements Runnable {
 
   private Animal crossover(Animal a, Animal b) {
     byte[] newGenome = Arrays.copyOf(a.getGenome().getData(), a.getGenome().getData().length);
-    for (int i = 0; i < newGenome.length; i += 2) {
+    for (int i = newGenome.length / 2; i < newGenome.length; ++i) {
       newGenome[i] = b.getGenome().getData()[i];
     }
     return newAnimalWithGenome(a,
